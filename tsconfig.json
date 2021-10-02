@@ -1,5 +1,6 @@
 {
   "exclude": ["node_modules", "dist"],
+  "include": ["src"],
   "compilerOptions": {
     "outDir": "dist",
     "target": "ES2015",
@@ -18,7 +19,7 @@
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "isolatedModules": false,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
       "@src/*": ["src/*"],
       "@utils/*": ["src/utils/*"],
