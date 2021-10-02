@@ -5,7 +5,8 @@ import * as R from 'fp-ts/Reader'
 import * as E from 'fp-ts/Either'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
-import * as S from '@utils/string'
+import * as U from '@utils/url'
+
 
 import { pipe } from 'fp-ts/lib/function';
 
@@ -29,7 +30,7 @@ export const request = <T, U extends Params = any>( url: URL ): R.Reader<U, RTE.
 			R.map( credentials =>
 				pipe(
 					url,
-					S.template( params ?? {} ),
+					U.template( params ?? {} ),
 					TE.tryCatchK(
 						u => api.get<T>( u, getConfiguration( credentials ) ),
 						E.toError
