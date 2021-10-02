@@ -20,7 +20,9 @@
     "isolatedModules": false,
     "baseUrl": "./",
     "paths": {
-      "@src/*": ["src/*"]
+      "@src/*": ["src/*"],
+      "@utils/*": ["src/utils/*"],
+      "@api/*": ["src/api/*"],
     },
     "plugins": [{ "transform": "typescript-transform-paths" }]
   }

@@ -11,6 +11,7 @@
     "tscheck": "ttsc --noEmit",
     "dev": "node build.js",
     "build": "NODE_ENV=production node build.js",
+    "build:example": "node build-example.js",
     "dev:watch": "node build.js --watch",
     "prebuild": "rm -rf dist && npm run tscheck",
     "lint": "eslint --fix src/**/*",

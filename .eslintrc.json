@@ -35,7 +35,7 @@
     ],
     "array-element-newline": ["warn", { "minItems": 4 }],
     "array-bracket-newline": ["warn", { "minItems": 4 }],
-    "indent": ["error", 2],
+    "indent": ["error", "tab"],
     "comma-dangle": [
       "warn",
       "always-multiline",
