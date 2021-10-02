@@ -35,7 +35,7 @@ async function main() {
 	try {
 		await build( {
 			...sharedConfiguration,
-			outfile: 'example/build/example.js',
+			outfile: 'example/build/index.js',
 		} );
 	} catch ( error ) {
 		console.error( error );

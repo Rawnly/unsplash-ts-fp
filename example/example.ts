@@ -3,7 +3,7 @@ import * as E from 'fp-ts/Either'
 
 import Unsplash from '../src';
 
-const unsplash = new Unsplash( process.env.UNSPLASH_API_KEY! )
+const unsplash = new Unsplash( process.env.UNSPLASH_ACCES_TOKEN! )
 
 const program = pipe(
 	{ count: 1 },
