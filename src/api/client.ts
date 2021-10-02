@@ -8,7 +8,6 @@ import * as TE from 'fp-ts/TaskEither'
 import * as S from '@utils/string'
 
 import { pipe } from 'fp-ts/lib/function';
-import { string } from 'fp-ts'
 
 
 const api = axios.create( {

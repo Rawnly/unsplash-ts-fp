@@ -1,5 +1,3 @@
-import qs from 'querystring'
-
 import { pipe } from 'fp-ts/lib/function'
 import * as R from 'fp-ts/Reader'
 import * as TE from 'fp-ts/TaskEither'

@@ -2,7 +2,6 @@ import * as t from 'io-ts'
 import * as E from 'fp-ts/Either'
 
 import { pipe } from 'fp-ts/lib/function'
-import { number } from 'fp-ts'
 
 export const StringFromArray = new t.Type<string, string[]>(
 	'StringFromArray',
