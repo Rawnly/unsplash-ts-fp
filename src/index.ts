@@ -1,5 +1,9 @@
 import { Credentials } from './api/client'
+import * as TE from 'fp-ts/TaskEither'
 import * as P from './api/endpoints/photos'
+import Photo, { TPhotoStats } from './entities/Photo'
+
+
 
 class Unsplash {
 	constructor( private clientId: string ) {}
@@ -10,11 +14,39 @@ class Unsplash {
 		}
 	}
 
+	/**
+	 * Photos Methods
+	 */
 	photos = {
-		all: ( params?: P.PhotosListParams ) => P.getPhotos( params )( this.credentials ),
-		random: ( params?: P.RandomPhotoParams ) => P.getRandom( params )( this.credentials ),
-		get: ( id: string ) => P.getPhoto( id )( this.credentials ),
+		all: ( params?: P.PhotosListParams ): TE.TaskEither<Error, Photo[]> => P.getPhotos( params )( this.credentials ),
+		random: ( params?: P.RandomPhotoParams ): TE.TaskEither<Error, Photo[]> => P.getRandom( params )( this.credentials ),
+		get: ( id: string ): TE.TaskEither<Error, Photo> => P.getPhoto( id )( this.credentials ),
+		stats: ( params: P.StatisticsParams ): TE.TaskEither<Error, TPhotoStats> => P.getStatistics( params )( this.credentials ),
+		trackDownload: ( id: string ): TE.TaskEither<Error, { url: string }> => P.trackDownload( id )( this.credentials ),
+		like: ( id: string ): TE.TaskEither<Error, { photo: Photo }> => P.like( id )( this.credentials ),
+		unlike: ( id: string ): TE.TaskEither<Error, { photo: Photo }> => P.unlike( id )( this.credentials ),
+		update: ( id: string, payload: P.UpdatePayload ): TE.TaskEither<Error, Photo> => P.update( id, payload )( this.credentials ),
 	}
+
+	/**
+	 * User Methods
+	 */
+	user = {}
+
+	/**
+	 * Collections Methods
+	 */
+	collections = {}
+
+	/**
+	 * Topics Methods
+	 */
+	topics = {}
+
+	/**
+	 * Stats Methods
+	 */
+	stats = {}
 }
 
 export default Unsplash

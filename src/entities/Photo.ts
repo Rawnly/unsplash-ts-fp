@@ -84,6 +84,45 @@ export const Photo = t.type( {
 	user: User,
 } )
 
+export const PhotoStats = t.type( {
+	id: t.string,
+	downloads: t.type( {
+		total: t.number,
+		historical: t.type( {
+			resolution: t.string,
+			quantity: t.number,
+			values: t.array( t.type( {
+				date: DateFromString,
+				value: t.number,
+			} ) ),
+		} ),
+	} ),
+	views: t.type( {
+		total: t.number,
+		historical: t.type( {
+			resolution: t.string,
+			quantity: t.number,
+			values: t.array( t.type( {
+				date: DateFromString,
+				value: t.number,
+			} ) ),
+		} ),
+	} ),
+	likes: t.type( {
+		total: t.number,
+		historical: t.type( {
+			resolution: t.string,
+			quantity: t.number,
+			values: t.array( t.type( {
+				date: DateFromString,
+				value: t.number,
+			} ) ),
+		} ),
+	} ),
+} )
+
+export type TPhotoStats = t.TypeOf<typeof PhotoStats>
+
 
 type TPhoto = t.TypeOf<typeof Photo>
 export default TPhoto;
