@@ -3,6 +3,8 @@ import * as E from 'fp-ts/Either'
 
 import { pipe } from 'fp-ts/lib/function'
 
+export const optional = <T extends t.Mixed>( type: T ) => t.union( [type, t.undefined, t.null] )
+
 export const StringFromArray = new t.Type<string, string[]>(
 	'StringFromArray',
 	( s ): s is string => typeof s === 'string',

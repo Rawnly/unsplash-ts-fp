@@ -1,7 +1,10 @@
 import { Credentials } from './api/client'
 import * as TE from 'fp-ts/TaskEither'
-import * as P from './api/endpoints/photos'
+import * as P from '@api/endpoints/photos'
+import * as U from '@api/endpoints/user'
+
 import Photo, { TPhotoStats } from './entities/Photo'
+import User from './entities/User'
 
 
 
@@ -31,7 +34,19 @@ class Unsplash {
 	/**
 	 * User Methods
 	 */
-	user = {}
+	user = {
+		get: ( username: string ): TE.TaskEither<Error, User> => U.getUser( username )( this.credentials ),
+	}
+
+	/**
+	 * Search Methods
+	 */
+	search = {
+		photos: Promise.resolve,
+		users: Promise.resolve,
+		collections: Promise.resolve,
+	}
+
 
 	/**
 	 * Collections Methods

@@ -4,12 +4,11 @@ import * as TE from 'fp-ts/TaskEither'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as t from 'io-ts'
 
-import { Credentials, del, get, post, put, request } from '@api/client'
+import { Credentials, del, get, post, put } from '@api/client'
 import Photo, { Photo as PhotoV, TPhotoStats } from '@src/entities/Photo'
 
-import { ArrayFromString, PhotosCount } from '@src/types/common-codecs'
+import { ArrayFromString, PhotosCount , optional } from '@src/types/common-codecs'
 
-const optional = <T extends t.Mixed>( type: T ) => t.union( [type, t.undefined, t.null] )
 
 const RandomPhotoParams = t.partial( {
 	collections: ArrayFromString,
