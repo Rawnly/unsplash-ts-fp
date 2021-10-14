@@ -1,30 +1,25 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "exclude": ["node_modules", "dist"],
-  "include": ["src"],
+  "include": ["src/**/*"],
   "compilerOptions": {
     "outDir": "dist",
     "target": "ES2015",
     "declaration": true,
     "resolveJsonModule": true,
     "sourceMap": true,
-    "module": "ESNext",
+    "module": "CommonJS",
     "moduleResolution": "Node",
-    "skipLibCheck": true,
     "incremental": true,
     "noUnusedLocals": true,
-    "strict": true,
     "allowJs": false,
     "checkJs": false,
     "pretty": true,
-    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "isolatedModules": true,
     "esModuleInterop": true,
-    "isolatedModules": false,
-    "baseUrl": ".",
-    "paths": {
-      "@src/*": ["src/*"],
-      "@utils/*": ["src/utils/*"],
-      "@api/*": ["src/api/*"],
-    },
-    "plugins": [{ "transform": "typescript-transform-paths" }]
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["es2020"]
   }
 }

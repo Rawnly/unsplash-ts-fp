@@ -1,6 +1,6 @@
-import { DateFromString } from '@src/types/common-codecs'
 import * as t from 'io-ts'
 import * as G from './generic'
+import { DateFromString } from '../types/common-codecs'
 
 export const Exif = t.type( {
 	make: t.string,

@@ -4,10 +4,10 @@ import * as TE from 'fp-ts/TaskEither'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as t from 'io-ts'
 
-import { Credentials, del, get, post, put } from '@api/client'
-import Photo, { Photo as PhotoV, TPhotoStats } from '@src/entities/Photo'
+import { Credentials, del, get, post, put } from '../client'
+import Photo, { Photo as PhotoV, TPhotoStats } from '../../entities/Photo'
 
-import { ArrayFromString, PhotosCount , optional } from '@src/types/common-codecs'
+import { ArrayFromString, PhotosCount, optional } from '../../types/common-codecs'
 
 
 const RandomPhotoParams = t.partial( {
@@ -35,7 +35,7 @@ const PhotosListParams = t.partial( {
 
 export type PhotosListParams = t.TypeOf<typeof PhotosListParams>
 
-export const getPhotos = ( params: PhotosListParams = { } ): RTE.ReaderTaskEither<Credentials, Error, Photo[]> =>
+export const getPhotos = ( params: PhotosListParams = {} ): RTE.ReaderTaskEither<Credentials, Error, Photo[]> =>
 	pipe(
 		R.ask<Credentials>(),
 		R.map(

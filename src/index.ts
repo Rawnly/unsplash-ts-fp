@@ -1,13 +1,11 @@
 import { Credentials } from './api/client'
 import * as TE from 'fp-ts/TaskEither'
-import * as P from '@api/endpoints/photos'
-import * as U from '@api/endpoints/user'
+
+import * as P from './api/endpoints/photos'
+import * as U from './api/endpoints/user'
 
 import Photo, { TPhotoStats } from './entities/Photo'
 import User from './entities/User'
-
-export { default as Photo } from './entities/Photo'
-export { default as User } from './entities/User'
 
 class Unsplash {
 	constructor( private clientId: string ) { }

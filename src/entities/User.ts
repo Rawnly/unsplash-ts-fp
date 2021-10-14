@@ -1,5 +1,5 @@
 import * as t from 'io-ts'
-import { optional, DateFromString } from '@src/types/common-codecs'
+import { optional, DateFromString } from '../types/common-codecs'
 import { Links } from './generic'
 
 

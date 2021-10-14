@@ -6,7 +6,7 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 
 import User, { User as UserV } from '../../entities/User'
 
-import { Credentials, get } from '@api/client'
+import { Credentials, get } from '../client'
 
 
 export const getUser = ( username: string ): RTE.ReaderTaskEither<Credentials, Error, User> =>

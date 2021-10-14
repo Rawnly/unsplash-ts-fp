@@ -5,7 +5,7 @@ import * as R from 'fp-ts/Reader'
 import * as E from 'fp-ts/Either'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
-import * as U from '@utils/url'
+import * as U from '../utils/url'
 
 
 import { pipe } from 'fp-ts/lib/function';
@@ -45,10 +45,10 @@ export const request = <T, U extends Params = any, P = any>( url: URL, method: M
 )
 
 
-export const get = <T , U extends Params>( url: URL ) => request<T, U>( url, 'GET' )
-export const post = <T , U extends Params, P = any>( url: URL, payload?: P ) => request<T, U, P>( url, 'POST', payload )
-export const del = <T , U extends Params>( url: URL ) => request<T, U>( url, 'DELETE' )
-export const put = <T , U extends Params, P = any>( url: URL ) =>
+export const get = <T, U extends Params>( url: URL ) => request<T, U>( url, 'GET' )
+export const post = <T, U extends Params, P = any>( url: URL, payload?: P ) => request<T, U, P>( url, 'POST', payload )
+export const del = <T, U extends Params>( url: URL ) => request<T, U>( url, 'DELETE' )
+export const put = <T, U extends Params, P = any>( url: URL ) =>
 	pipe(
 		R.ask<P>(),
 		R.map( payload => request<T, U, P>( url, 'PUT', payload ) )
