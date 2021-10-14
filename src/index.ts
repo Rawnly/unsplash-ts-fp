@@ -6,10 +6,11 @@ import * as U from '@api/endpoints/user'
 import Photo, { TPhotoStats } from './entities/Photo'
 import User from './entities/User'
 
-
+export { default as Photo } from './entities/Photo'
+export { default as User } from './entities/User'
 
 class Unsplash {
-	constructor( private clientId: string ) {}
+	constructor( private clientId: string ) { }
 
 	get credentials(): Credentials {
 		return {
