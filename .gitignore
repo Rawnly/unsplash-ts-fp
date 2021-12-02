@@ -7,3 +7,4 @@ coverage
 
 example/build
 .env
+.yarn

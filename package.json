@@ -2,11 +2,11 @@
   "name": "unsplash-ts-fp",
   "description": "Functional Unsplash api client",
   "version": "0.0.1-alpha.4",
+  "packageManager": "yarn@3.1.1",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "typings": "dist/index.d.ts",
   "license": "MIT",
-  "private": false,
   "scripts": {
     "tscheck": "ttsc --noEmit",
     "dev": "node build.js",
