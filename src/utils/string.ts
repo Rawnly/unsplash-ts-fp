@@ -1,10 +1,6 @@
 import * as R from 'fp-ts/Reader'
 import { pipe } from 'fp-ts/function'
 
-type FunctionalReplace = ( searchValue: string | RegExp, replaceValue: ( ( substring: string, ...params: any[] ) => string ) ) => ( string: string ) => string
-
-export const replace: FunctionalReplace = ( searchValue: string | RegExp, replaceValue: ( ( substring: string, ...params: any[] ) => string ) ) => ( string: string ) => string.replace( searchValue, replaceValue )
-
 export const template = ( params: Record<string, any> ): R.Reader<string, string> =>  {
 	return pipe(
 		R.ask<string>(),
@@ -15,4 +11,21 @@ export const template = ( params: Record<string, any> ): R.Reader<string, string
 			),
 		)
 	)
+}
+
+type SearchValue = string | RegExp
+type ReplaceValueFn = ( ( substring: string, ...params: any[] ) => string )
+
+
+export function replace( searchValue: SearchValue, replaceValue: string ): ( str: string ) => string
+export function replace( searchValue: SearchValue, replaceValue: ReplaceValueFn ): ( str: string ) => string
+
+export function replace( searchValue: SearchValue, replaceValue: string | ReplaceValueFn ): ( str: string ) => string {
+	return ( str: string ) => {
+		if ( typeof replaceValue === 'string' ) {
+			return str.replace( searchValue, replaceValue )
+		}
+
+		return str.replace( searchValue, replaceValue )
+	}
 }

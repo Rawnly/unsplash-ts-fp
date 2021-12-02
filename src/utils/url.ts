@@ -5,6 +5,7 @@ import qs from 'querystring'
 import * as R from 'fp-ts/Reader'
 import * as A from 'fp-ts/lib/Array'
 import * as RE from 'fp-ts/lib/Record'
+import * as S from 'fp-ts/string'
 import { replace } from './string'
 
 export const addQuery = ( query: string ) => ( url: string ): string =>
@@ -40,3 +41,20 @@ export const template = ( params: Record<string, any> ): R.Reader<string, string
 		)
 	)
 }
+
+
+const formatParamKey = ( key: string ): string =>  pipe(
+	key,
+	replace( /([A-Z])/g, '_$1' ),
+	S.toLowerCase
+)
+
+
+export const formatParamKeys = <T extends Record<string, unknown>>( params: T ): T => pipe(
+	params,
+	RE.keys,
+	A.reduce( {} as T, ( acc, key ) => ( {
+		...acc,
+		[formatParamKey( key )]: params[key],
+	} ) )
+)

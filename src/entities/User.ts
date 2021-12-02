@@ -42,3 +42,12 @@ export const User = t.type( {
 
 type TUser = t.TypeOf<typeof User>
 export default TUser
+
+
+
+export const Portfolio = t.type( {
+	url: t.string,
+} )
+
+
+export type IPortfolio = t.TypeOf<typeof Portfolio>
