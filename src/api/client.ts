@@ -15,41 +15,49 @@ const api = axios.create( {
 
 
 
-export type Credentials = { clientId: string; clientSecret?: string }
+export type Credentials = {
+	clientId: string;
+	clientSecret?: string
+	bearerToken?: string
+}
 
 type URL = string;
 type Params = Record<string, any>
 
 
 
-export const request = <T, U extends Params = any, P = any>( url: URL, method: Method = 'GET', payload?: P ): R.Reader<U, RTE.ReaderTaskEither<Credentials, Error, T>> => pipe(
-	R.ask<U>(),
-	R.map( ( params ) =>
-		pipe(
-			R.ask<Credentials>(),
-			R.map( credentials =>
-				pipe(
-					url,
-					U.template( params ?? {} ),
-					TE.tryCatchK(
-						u => api.request<T>( getConfiguration( u, method, credentials, payload ) ),
-						E.toError
-					),
-					TE.map( response => response.data )
-				)
-			),
+export function request<R, Params extends Record<string, any> = Record<string, any>>( method: 'GET' | 'get', url: URL ): R.Reader<Params, RTE.ReaderTaskEither<Credentials, Error, R>>
+export function request<R, Params extends Record<string, any> = Record<string, any>, Payload = any>( method: Exclude<Method, 'GET' | 'get'>,url: URL, payload?: Payload ): R.Reader<Params, RTE.ReaderTaskEither<Credentials, Error, R>>
+export function request<R, Params extends Record<string, any> = Record<string, any>, Payload = any>( method: Method = 'GET',url: URL, payload?: Payload ): R.Reader<Params, RTE.ReaderTaskEither<Credentials, Error, R>> {
+	return pipe(
+		R.ask<Params>(),
+		R.map( ( params ) =>
+			pipe(
+				RTE.ask<Credentials>(),
+				RTE.chainTaskEitherK( credentials =>
+					pipe(
+						url,
+						U.template( params ?? {} ),
+						TE.tryCatchK(
+							u => api.request<R>( getConfiguration( u, method, credentials, payload ) ),
+							E.toError
+						),
+						TE.map( response => response.data )
+					)
+				),
+			)
 		)
 	)
-)
+}
 
 
-export const get = <T, U extends Params>( url: URL ) => request<T, U>( url, 'GET' )
-export const post = <T, U extends Params, P = any>( url: URL, payload?: P ) => request<T, U, P>( url, 'POST', payload )
-export const del = <T, U extends Params>( url: URL ) => request<T, U>( url, 'DELETE' )
+export const get = <T, U extends Params>( url: URL ) => request<T, U>(  'GET', url )
+export const post = <T, U extends Params, P = any>( url: URL, payload?: P ) => request<T, U, P>(  'POST', url, payload )
+export const del = <T, U extends Params>( url: URL ) => request<T, U>(  'DELETE', url )
 export const put = <T, U extends Params, P = any>( url: URL ) =>
 	pipe(
 		R.ask<P>(),
-		R.map( payload => request<T, U, P>( url, 'PUT', payload ) )
+		R.map( payload => request<T, U, P>(  'PUT', url, payload ) )
 	)
 
 
@@ -58,7 +66,12 @@ export const getConfiguration = ( url: string, method: Method, credentials: Cred
 	url,
 	data: payload,
 	method,
-	headers: {
-		Authorization: `Client-ID ${credentials.clientId}`,
+	params: credentials.bearerToken && {
+		client_id: credentials.clientId,
 	},
+	headers: credentials.bearerToken ? ( {
+		Authorization: `Client-ID ${credentials.clientId}`,
+	} ) : ( {
+		Authorization: `Bearer ${credentials.bearerToken}`,
+	} ),
 } )

@@ -2,10 +2,10 @@ import { pipe } from 'fp-ts/lib/function'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as t from 'io-ts'
 
-import { Credentials, del, get, post, put } from '../client'
-import { Photo, PhotoStats } from '../../entities/Photo'
+import { Credentials, request } from '../client'
+import { IdObj, Photo, GetPhotosParams, PhotoStats, UpdatePhotoPayload } from '../../entities/Photo'
 
-import { ArrayFromString, PhotosCount, optional } from '../../types/common-codecs'
+import { ArrayFromString, PhotosCount } from '../../types/common-codecs'
 import { decodeWith } from '../../utils/schema-util'
 
 
@@ -26,21 +26,13 @@ type StringedPhotoParams = Omit<RandomPhotoParams, 'collections' | 'topics'> & {
 }
 
 
-const PhotosListParams = t.partial( {
-	page: t.number,
-	per_page: t.number,
-	order_by: t.number,
-} )
-
-export type PhotosListParams = t.TypeOf<typeof PhotosListParams>
-
-export const getPhotos = ( params: PhotosListParams = {} ): RTE.ReaderTaskEither<Credentials, Error, Photo[]> =>
+export const getPhotos = ( params: GetPhotosParams = {} ): RTE.ReaderTaskEither<Credentials, Error, Photo[]> =>
 	pipe(
 		RTE.ask<Credentials>(),
 		RTE.chainTaskEitherK(
 			pipe(
 				params,
-				get<Photo[], PhotosListParams>( '/photos' ),
+				request<Photo[], GetPhotosParams>(  'GET', '/photos' ),
 			),
 		),
 		RTE.chainTaskEitherK(
@@ -64,7 +56,7 @@ export const getPhoto = ( id: string ): RTE.ReaderTaskEither<Credentials, Error,
 		RTE.chainTaskEitherK(
 			pipe(
 				{ id },
-				get<Photo, { id: string }>( '/photos/:id' ),
+				request<Photo, { id: string }>( 'GET', '/photos/:id' ),
 			)
 		),
 		RTE.chainTaskEitherK(
@@ -87,7 +79,7 @@ export const getRandom = ( params: RandomPhotoParams = { count: 1 } ): RTE.Reade
 			pipe(
 				params,
 				RandomPhotoParams.encode,
-				get<Photo[], StringedPhotoParams>( '/photos/random' ),
+				request<Photo[], StringedPhotoParams>( 'GET', '/photos/random' ),
 			)
 		),
 		RTE.chainTaskEitherK(
@@ -117,7 +109,7 @@ export const getStatistics = ( params: StatisticsParams ): RTE.ReaderTaskEither<
 			pipe(
 				params,
 				StatisticsParams.encode,
-				get<PhotoStats, StatisticsParams>( '/photos/:id/statistics' )
+				request<PhotoStats, StatisticsParams>( 'GET',  '/photos/:id/statistics' )
 			),
 		),
 		RTE.chainTaskEitherK(
@@ -147,7 +139,8 @@ export const trackDownload = ( id: string ): RTE.ReaderTaskEither<Credentials, E
 		RTE.chainTaskEitherK(
 			pipe(
 				{ id },
-				get<{ url: string }, { id: string }>( '/photos/:id/download' ),
+				IdObj.encode,
+				request<{ url: string }, IdObj>( 'GET', '/photos/:id/download' ),
 			)
 		)
 	)
@@ -159,7 +152,8 @@ export const like = ( id: string ): RTE.ReaderTaskEither<Credentials, Error, { p
 		RTE.chainTaskEitherK(
 			pipe(
 				{ id },
-				post<{ photo: Photo }, { id: string }>( '/photos/:id/like' ),
+				IdObj.encode,
+				request<{ photo: Photo }, IdObj>( 'POST', '/photos/:id/like' ),
 			)
 		)
 	)
@@ -170,51 +164,27 @@ export const unlike = ( id: string ): RTE.ReaderTaskEither<Credentials, Error, {
 		RTE.chainTaskEitherK(
 			pipe(
 				{ id },
-				del<{ photo: Photo }, { id: string }>( '/photos/:id/like' ),
+				IdObj.encode,
+				request<{ photo: Photo }, IdObj>( 'DELETE', '/photos/:id/like' ),
 			)
 		)
 	)
 
 
 
-const UpdatePayload = t.type( {
-	description: optional( t.string ),
-	show_on_priofile: optional( t.boolean ),
-	location: optional( t.partial( {
-		latitude: t.number,
-		longitude: t.number,
-		city: t.string,
-		country: t.string,
-	} ) ),
-	exif: optional( t.partial( {
-		make: t.string,
-		model: t.string,
-		exposure_time: t.string,
-		aperture_value: t.string,
-		focal_length: t.string,
-		iso_speed_ratings: t.string,
-	} ) ),
-} )
-
-export type UpdatePayload = t.TypeOf<typeof UpdatePayload>
-
-
-export const update = ( id: string, payload: UpdatePayload ): RTE.ReaderTaskEither<Credentials, Error, Photo> =>
+export const update = ( id: string, payload: UpdatePhotoPayload ): RTE.ReaderTaskEither<Credentials, Error, Photo> =>
 	pipe(
 		RTE.ask<Credentials>(),
 		RTE.chainTaskEitherK(
 			pipe(
 				{ id },
-				pipe(
-					payload,
-					UpdatePayload.encode,
-					put<Photo, { id: string }, UpdatePayload>( '/photos/:id' ),
-				)
-			)
+				IdObj.encode,
+				request<Photo, IdObj, UpdatePhotoPayload>( 'PUT',  '/photos/:id/statistics', UpdatePhotoPayload.encode( payload ) )
+			),
 		),
 		RTE.chainTaskEitherK(
 			decodeWith(
-				Photo
+				Photo,
 			)
 		)
 	)

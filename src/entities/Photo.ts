@@ -1,6 +1,6 @@
 import * as t from 'io-ts'
 import * as G from './generic'
-import { DateFromString } from '../types/common-codecs'
+import { DateFromString, optional } from '../types/common-codecs'
 
 const Exif = t.type( {
 	make: t.string,
@@ -134,6 +134,42 @@ const PhotoStats = t.type( {
 type PhotoStats = t.TypeOf<typeof PhotoStats>
 
 
+
+
+const UpdatePhotoPayload = t.type( {
+	description: optional( t.string ),
+	show_on_priofile: optional( t.boolean ),
+	location: optional( t.partial( {
+		latitude: t.number,
+		longitude: t.number,
+		city: t.string,
+		country: t.string,
+	} ) ),
+	exif: optional( t.partial( {
+		make: t.string,
+		model: t.string,
+		exposure_time: t.string,
+		aperture_value: t.string,
+		focal_length: t.string,
+		iso_speed_ratings: t.string,
+	} ) ),
+} )
+
+type UpdatePhotoPayload = t.TypeOf<typeof UpdatePhotoPayload>
+
+const IdObj = t.type( { id: t.string } )
+
+type IdObj = t.TypeOf<typeof IdObj>
+
+
+const GetPhotosParams = t.partial( {
+	page: t.number,
+	per_page: t.number,
+	order_by: t.number,
+} )
+
+type GetPhotosParams = t.TypeOf<typeof GetPhotosParams>
+
 export {
 	Photo,
 	User,
@@ -141,4 +177,7 @@ export {
 	PhotoStats,
 	CurrentUserCollection,
 	Location,
+	UpdatePhotoPayload,
+	GetPhotosParams,
+	IdObj,
 }
