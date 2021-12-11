@@ -3,7 +3,7 @@ import { optional, DateFromString } from '../types/common-codecs'
 import { Links } from './generic'
 
 
-export const User = t.type( {
+const User = t.type( {
 	id: t.string,
 	updated_at: DateFromString,
 	username: t.string,
@@ -40,14 +40,15 @@ export const User = t.type( {
 	} )] ),
 } )
 
-type TUser = t.TypeOf<typeof User>
-export default TUser
+type User = t.TypeOf<typeof User>
 
-
-
-export const Portfolio = t.type( {
+const Portfolio = t.type( {
 	url: t.string,
 } )
 
+type Portfolio = t.TypeOf<typeof Portfolio>
 
-export type IPortfolio = t.TypeOf<typeof Portfolio>
+export {
+	Portfolio,
+	User,
+}

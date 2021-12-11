@@ -6,8 +6,6 @@ import * as E from 'fp-ts/Either'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
 import * as U from '../utils/url'
-
-
 import { pipe } from 'fp-ts/lib/function';
 
 

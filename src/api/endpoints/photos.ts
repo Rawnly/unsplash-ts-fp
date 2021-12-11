@@ -1,13 +1,12 @@
 import { pipe } from 'fp-ts/lib/function'
-import * as R from 'fp-ts/Reader'
-import * as TE from 'fp-ts/TaskEither'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as t from 'io-ts'
 
 import { Credentials, del, get, post, put } from '../client'
-import Photo, { Photo as PhotoV, TPhotoStats } from '../../entities/Photo'
+import { Photo, PhotoStats } from '../../entities/Photo'
 
 import { ArrayFromString, PhotosCount, optional } from '../../types/common-codecs'
+import { decodeWith } from '../../utils/schema-util'
 
 
 const RandomPhotoParams = t.partial( {
@@ -37,15 +36,17 @@ export type PhotosListParams = t.TypeOf<typeof PhotosListParams>
 
 export const getPhotos = ( params: PhotosListParams = {} ): RTE.ReaderTaskEither<Credentials, Error, Photo[]> =>
 	pipe(
-		R.ask<Credentials>(),
-		R.map(
+		RTE.ask<Credentials>(),
+		RTE.chainTaskEitherK(
 			pipe(
 				params,
 				get<Photo[], PhotosListParams>( '/photos' ),
 			),
 		),
-		R.chainFirst(
-			TE.map( t.array( PhotoV ).decode )
+		RTE.chainTaskEitherK(
+			decodeWith(
+				t.array( Photo )
+			)
 		)
 	)
 
@@ -59,17 +60,16 @@ export const getPhotos = ( params: PhotosListParams = {} ): RTE.ReaderTaskEither
 
 export const getPhoto = ( id: string ): RTE.ReaderTaskEither<Credentials, Error, Photo> =>
 	pipe(
-		R.ask<Credentials>(),
-		R.map(
+		RTE.ask<Credentials>(),
+		RTE.chainTaskEitherK(
 			pipe(
 				{ id },
 				get<Photo, { id: string }>( '/photos/:id' ),
 			)
 		),
-		R.chainFirst( te =>
-			pipe(
-				te,
-				TE.map( data => PhotoV.decode( data ) )
+		RTE.chainTaskEitherK(
+			decodeWith(
+				Photo
 			)
 		)
 	)
@@ -82,16 +82,18 @@ export const getPhoto = ( id: string ): RTE.ReaderTaskEither<Credentials, Error,
 
 export const getRandom = ( params: RandomPhotoParams = { count: 1 } ): RTE.ReaderTaskEither<Credentials, Error, Photo[]> =>
 	pipe(
-		R.ask<Credentials>(),
-		R.map(
+		RTE.ask<Credentials>(),
+		RTE.chainTaskEitherK(
 			pipe(
 				params,
 				RandomPhotoParams.encode,
 				get<Photo[], StringedPhotoParams>( '/photos/random' ),
 			)
 		),
-		R.chainFirst(
-			TE.map( t.array( PhotoV ).decode )
+		RTE.chainTaskEitherK(
+			decodeWith(
+				t.array( Photo )
+			)
 		)
 	)
 
@@ -108,18 +110,20 @@ export type StatisticsParams = t.TypeOf<typeof StatisticsParams>
  * @description Returns photo's statistics
  * @param {StatisticsParams} params
  */
-export const getStatistics = ( params: StatisticsParams ): RTE.ReaderTaskEither<Credentials, Error, TPhotoStats> =>
+export const getStatistics = ( params: StatisticsParams ): RTE.ReaderTaskEither<Credentials, Error, PhotoStats> =>
 	pipe(
-		R.ask<Credentials>(),
-		R.map(
+		RTE.ask<Credentials>(),
+		RTE.chainTaskEitherK(
 			pipe(
 				params,
 				StatisticsParams.encode,
-				get<TPhotoStats, StatisticsParams>( '/photos/:id/statistics' )
+				get<PhotoStats, StatisticsParams>( '/photos/:id/statistics' )
 			),
 		),
-		R.chainFirst(
-			TE.map( t.array( PhotoV ).decode )
+		RTE.chainTaskEitherK(
+			decodeWith(
+				PhotoStats,
+			)
 		)
 	)
 
@@ -139,8 +143,8 @@ export const getStatistics = ( params: StatisticsParams ): RTE.ReaderTaskEither<
  */
 export const trackDownload = ( id: string ): RTE.ReaderTaskEither<Credentials, Error, { url: string }> =>
 	pipe(
-		R.ask<Credentials>(),
-		R.map(
+		RTE.ask<Credentials>(),
+		RTE.chainTaskEitherK(
 			pipe(
 				{ id },
 				get<{ url: string }, { id: string }>( '/photos/:id/download' ),
@@ -149,10 +153,10 @@ export const trackDownload = ( id: string ): RTE.ReaderTaskEither<Credentials, E
 	)
 
 
-export const like = ( id: string ) =>
+export const like = ( id: string ): RTE.ReaderTaskEither<Credentials, Error, { photo: Photo }> =>
 	pipe(
-		R.ask<Credentials>(),
-		R.map(
+		RTE.ask<Credentials>(),
+		RTE.chainTaskEitherK(
 			pipe(
 				{ id },
 				post<{ photo: Photo }, { id: string }>( '/photos/:id/like' ),
@@ -160,10 +164,10 @@ export const like = ( id: string ) =>
 		)
 	)
 
-export const unlike = ( id: string ) =>
+export const unlike = ( id: string ): RTE.ReaderTaskEither<Credentials, Error, { photo: Photo }> =>
 	pipe(
-		R.ask<Credentials>(),
-		R.map(
+		RTE.ask<Credentials>(),
+		RTE.chainTaskEitherK(
 			pipe(
 				{ id },
 				del<{ photo: Photo }, { id: string }>( '/photos/:id/like' ),
@@ -197,8 +201,8 @@ export type UpdatePayload = t.TypeOf<typeof UpdatePayload>
 
 export const update = ( id: string, payload: UpdatePayload ): RTE.ReaderTaskEither<Credentials, Error, Photo> =>
 	pipe(
-		R.ask<Credentials>(),
-		R.map(
+		RTE.ask<Credentials>(),
+		RTE.chainTaskEitherK(
 			pipe(
 				{ id },
 				pipe(
@@ -208,10 +212,9 @@ export const update = ( id: string, payload: UpdatePayload ): RTE.ReaderTaskEith
 				)
 			)
 		),
-		R.chainFirst( te =>
-			pipe(
-				te,
-				TE.map( data => data )
+		RTE.chainTaskEitherK(
+			decodeWith(
+				Photo
 			)
 		)
 	)

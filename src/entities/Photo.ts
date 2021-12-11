@@ -2,7 +2,7 @@ import * as t from 'io-ts'
 import * as G from './generic'
 import { DateFromString } from '../types/common-codecs'
 
-export const Exif = t.type( {
+const Exif = t.type( {
 	make: t.string,
 	model: t.string,
 	exposure_time: t.string,
@@ -11,7 +11,9 @@ export const Exif = t.type( {
 	iso: t.number,
 } )
 
-export const Location = t.type( {
+type Exif = t.TypeOf<typeof Exif>
+
+const Location = t.type( {
 	city: t.string,
 	country: t.string,
 	position: t.type( {
@@ -20,7 +22,9 @@ export const Location = t.type( {
 	} ),
 } )
 
-export const CurrentUserCollection = t.type( {
+type Location = t.TypeOf<typeof Location>
+
+const CurrentUserCollection = t.type( {
 	id: t.number,
 	title: t.string,
 	published_at: t.string,
@@ -30,7 +34,9 @@ export const CurrentUserCollection = t.type( {
 	user: t.null,
 } )
 
-export const User = t.type( {
+type CurrentUserCollection = t.TypeOf<typeof CurrentUserCollection>
+
+const User = t.type( {
 	id: t.string,
 	username: t.string,
 	name: t.string,
@@ -54,7 +60,9 @@ export const User = t.type( {
 	} )] ),
 } )
 
-export const Photo = t.type( {
+type User = t.TypeOf<typeof User>
+
+const Photo = t.type( {
 	id: t.string,
 	created_at: DateFromString,
 	updated_at: DateFromString,
@@ -84,7 +92,9 @@ export const Photo = t.type( {
 	user: User,
 } )
 
-export const PhotoStats = t.type( {
+type Photo = t.TypeOf<typeof Photo>
+
+const PhotoStats = t.type( {
 	id: t.string,
 	downloads: t.type( {
 		total: t.number,
@@ -121,8 +131,14 @@ export const PhotoStats = t.type( {
 	} ),
 } )
 
-export type TPhotoStats = t.TypeOf<typeof PhotoStats>
+type PhotoStats = t.TypeOf<typeof PhotoStats>
 
 
-type TPhoto = t.TypeOf<typeof Photo>
-export default TPhoto;
+export {
+	Photo,
+	User,
+	Exif,
+	PhotoStats,
+	CurrentUserCollection,
+	Location,
+}

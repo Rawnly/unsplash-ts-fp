@@ -1,14 +1,20 @@
 import * as t from 'io-ts'
 
 /** Tags */
-export const Tag = t.type( {
+const Tag = t.type( {
 	title: t.string,
 } )
+
+type Tag = t.TypeOf<typeof Tag>
 
 /**
  * Generic links interface
  */
-export const Links = t.type( {
+const Links = t.type( {
 	self: t.string,
 	html: t.string,
 } )
+
+type Links = t.TypeOf<typeof Links>
+
+export { Tag, Links }
